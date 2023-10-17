@@ -5,9 +5,17 @@ import Drawer from './components/Drawer';
 
 
 const arr = [
-  { name: 'Мужские Кроссовки Nike Blazer Mid Suede', price: 12999, image: "/assets/images/product1.png" },
-  { name: 'Мужские Кроссовки Nike Air Max 270', price: 10500, image: "/assets/images/product2.jpg" },
-  { name: 'Кроссовки Puma X Aka Boku Future Rider', price: 17069, image: "/assets/images/product3.jpg" }
+  { name: 'Мужские Кроссовки Nike Blazer Mid Suede', 
+    price: 12999, 
+    image: "/assets/images/product1.png" },
+
+  { name: 'Мужские Кроссовки Nike Air Max 270', 
+    price: 10500, 
+    image: "/assets/images/product2.jpg" },
+
+  { name: 'Кроссовки Puma X Aka Boku Future Rider', 
+    price: 17069, 
+    image: "/assets/images/product3.jpg" }
 ];
 
 function App() {
@@ -26,7 +34,7 @@ function App() {
         </div>
         <div className="products">
           {
-            arr.map(el => {
+            arr.map((el) => {
                 return <Card name={el.name} price={el.price} image={el.image}/>
             })
           }

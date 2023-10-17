@@ -1,29 +1,31 @@
+import styles from './Drawer.module.scss';
+
 function Drawer() {
     return (
-        <div style={{ display: 'none' }} className="overlay">
-            <div className="drawer">
+        <div style={{ display: 'none' }} className={styles.overlay}>
+            <div className={styles.drawer}>
                 <h2>Корзина <img className="delete" src={"/assets/images/delete.svg"} alt="delete" />
                 </h2>
-                <div className="shoppingList">
-                    <div className="shopItem">
-                        <img className="shopImage" src="/assets/images/product1.png" alt="product" />
-                        <div className="shopInfo">
+                <div  className={styles.shoppingList}>
+                    <div className={styles.shopItem} >
+                        <img  className={styles.shopImage} src="/assets/images/product1.png" alt="product" />
+                        <div className={styles.shopInfo}>
                             <p>Мужские Кроссовки Nike Blazer Mid Suede</p>
                             <b>12 999 грн.</b>
                         </div>
-                        <img className="delete" src="/assets/images/delete.svg" alt="delete" />
+                        <img className={styles.delete}  src="/assets/images/delete.svg" alt="delete" />
                     </div>
 
                 </div>
-                <div className="orderInfo">
-                    <div className="sum">
+                <div className={styles.orderInfo}>
+                    <div className={styles.sum}>
                         <p>Итого:</p>
-                        <div className='dush'></div>
+                        <div className={styles.dush}></div>
                         <b>21 498 грн.</b>
                     </div>
-                    <div className="tax">
+                    <div  className={styles.tax}>
                         <p>Налог 5%:</p>
-                        <div className='dush'></div>
+                        <div className={styles.dush}></div>
                         <b>1074 грн.</b>
                     </div>
                     <button className='greenButton'>Оформить заказ <img src="/assets/images/arrow.svg" alt="arrow" /></button>
