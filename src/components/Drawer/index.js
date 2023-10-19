@@ -1,10 +1,10 @@
 import styles from './Drawer.module.scss';
 
-function Drawer() {
+function Drawer(props) {
     return (
-        <div style={{ display: 'none' }} className={styles.overlay}>
+        <div className={styles.overlay}>
             <div className={styles.drawer}>
-                <h2>Корзина <img className="delete" src={"/assets/images/delete.svg"} alt="delete" />
+                <h2>Корзина <img className="delete" onClick={props.onClickCross} src={"/assets/images/delete.svg"} alt="delete" />
                 </h2>
                 <div  className={styles.shoppingList}>
                     <div className={styles.shopItem} >

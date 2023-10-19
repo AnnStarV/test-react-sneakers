@@ -1,6 +1,6 @@
 import styles from './Header.module.scss';
 
-function Header() {
+function Header(props) {
     return (
         <header>
             <div className={styles.logoWrapper}>
@@ -12,15 +12,15 @@ function Header() {
             </div>
             <div className={styles.navigation}>
                 <ul>
-                    <li>
-                        <img width={18} height={18} src="/assets/images/bucket.png" alt="bucket" />
+                    <li onClick={props.onClickCart}>
+                        <img className={styles.bucket} width={18} height={18} src="/assets/images/bucket.png" alt="bucket" />
                         <p>1205 грн.</p>
                     </li>
                     <li>
-                        <img src="/assets/images/favorites.png" alt="favorites" />
+                        <img className={styles.favorites} src="/assets/images/favorites.png" alt="favorites" />
                     </li>
                     <li>
-                        <img src="/assets/images/profile.png" alt="favorites" />
+                        <img className={styles.profile} src="/assets/images/profile.png" alt="profile" />
                     </li>
                 </ul>
             </div>
