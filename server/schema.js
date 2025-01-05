@@ -8,4 +8,13 @@ const products = new Schema({
     image: String
 });
 
-module.exports = mongoose.model('products', products, "products");
+const cart = new Schema({
+    title: String,
+    price: Number,
+    image: String
+});
+
+const Products = mongoose.model('products', products, 'products');
+const CartItem = mongoose.model('cart', cart, 'cart');
+
+module.exports = { Products, CartItem };

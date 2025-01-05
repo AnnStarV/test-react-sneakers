@@ -6,31 +6,13 @@ import Card from './components/Card';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
 
-const arr = [
-  {
-    name: 'Мужские Кроссовки Nike Blazer Mid Suede',
-    price: 12999,
-    image: "/assets/images/product1.png"
-  },
-
-  {
-    name: 'Мужские Кроссовки Nike Air Max 270',
-    price: 10500,
-    image: "/assets/images/product2.jpg"
-  },
-
-  {
-    name: 'Кроссовки Puma X Aka Boku Future Rider',
-    price: 17069,
-    image: "/assets/images/product3.jpg"
-  }
-];
 
 function App() {
 
   const [cartOpened, setCartOpened] = React.useState(false);
+  const [cartItems, setCartItems] = React.useState([]);
   const [products, setProducts] = React.useState([]);
-
+  const [searchValue, setSearch] = React.useState('');
 
   React.useEffect(() => {
     
@@ -44,31 +26,61 @@ function App() {
       // handle error
       console.log(error);
     })
+
+    axios.get('http://localhost:5353/cart')
+    .then(function (response) {
+      setCartItems(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   },[]);
 
+  const onAddToCart = (obj) => {
+    axios.post('http://localhost:5353/cart', obj)
+      .then(function (response) {
+        setCartItems((prev) => [...prev, response.data]);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const onRemoveItem = (obj) => {
+    setCartItems(prev => prev.filter(item => 
+      item.title !== obj.title || 
+      item.image !== obj.image || 
+      item.price !== obj.price
+    ));
+  }
+
+  const onChangeSearchInput = (event) => {
+    setSearch(event.target.value);
+  }
 
   return (
     <div className="wrapper">
-      {cartOpened && <Drawer onClickCross={() => setCartOpened(false)} />}
+      {cartOpened && <Drawer items={cartItems} onRemove={(obj)=>onRemoveItem(obj)} onClickCross={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <hr />
       <div className="productPage">
         <div className="headerProducts">
-          <h1>Все кроссовки</h1>
+          <h1>{searchValue ? `Поиск по запросу: "${searchValue}"`: "Все кроссовки"}</h1>
           <div className="searchComponent" >
             <img src="/assets/images/search.png" alt="search" />
-            <input type="text" placeholder='Поиск...' />
+            <input onChange={onChangeSearchInput} value={searchValue} type="text" placeholder='Поиск...' />
           </div>
         </div>
         <div className="products">
           {products.map((el,idx) => (
             <Card
               key={idx}
-              name={el.title}
+              title={el.title}
               price={el.price}
               image={el.image}
               onFavorite={() => console.log('add to bookmarks')}
-              onPlus={() => console.log('add to cart')}
+              onPlus={(obj) => onAddToCart(obj)}
+              onRemoveItem={(obj) => onRemoveItem(obj)}
             />
           ))}
         </div>

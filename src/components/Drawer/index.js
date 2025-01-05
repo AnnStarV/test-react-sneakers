@@ -1,21 +1,28 @@
 import styles from './Drawer.module.scss';
 
-function Drawer(props) {
+function Drawer({onRemove, onClickCross, items = [] }) {
+
+    const handleRemoveItem = (obj) => {
+        onRemove(obj);
+    }
+    console.log(items);
     return (
         <div className={styles.overlay}>
             <div className={styles.drawer}>
-                <h2>Корзина <img className="delete" onClick={props.onClickCross} src={"/assets/images/delete.svg"} alt="delete" />
+                <h2>Корзина <img className="delete" onClick={onClickCross} src={"/assets/images/delete.svg"} alt="delete" />
                 </h2>
-                <div  className={styles.shoppingList}>
-                    <div className={styles.shopItem} >
-                        <img  className={styles.shopImage} src="/assets/images/product1.png" alt="product" />
-                        <div className={styles.shopInfo}>
-                            <p>Мужские Кроссовки Nike Blazer Mid Suede</p>
-                            <b>12 999 грн.</b>
-                        </div>
-                        <img className={styles.delete}  src="/assets/images/delete.svg" alt="delete" />
-                    </div>
+                <div className={styles.shoppingList}>
 
+                    {items.map((obj)=>(
+                        <div key={obj._id} className={styles.shopItem} >
+                            <img className={styles.shopImage} src={obj.image} alt="product" />
+                            <div className={styles.shopInfo}>
+                                <p>{obj.title}</p>
+                                <b>{obj.price} грн.</b>
+                            </div>
+                            <img onClick={() => handleRemoveItem(obj)} className={styles.delete}  src="/assets/images/delete.svg" alt="delete" />
+                        </div>
+                    ))}
                 </div>
                 <div className={styles.orderInfo}>
                     <div className={styles.sum}>

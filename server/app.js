@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const Products = require('./schema');
+const { Products, CartItem } = require('./schema');
 const express = require('express');
+const cors = require('cors');
 
 mongoose.connect("mongodb://localhost:27017/sneackers")
     .then((res) => {
@@ -8,6 +9,8 @@ mongoose.connect("mongodb://localhost:27017/sneackers")
     .catch((err) => console.log(err));
 
 let app = express();
+app.use(cors()); // Добавьте эту строку для использования CORS
+app.use(express.json());
 
 //app.use(express.json({ limit: '300mb' }));
 
@@ -23,9 +26,30 @@ app.get('/getProducts', (req, res) => {
 
 });
 
-app.post('/api', (req, res) => {
-
+app.post('/cart', (req, res) => {
+    const newCartItem = new CartItem(req.body);
+    newCartItem.save()
+        .then(() => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.status(201).send(newCartItem);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
 });
+
+app.get('/cart', (req, res) => {
+    CartItem.find().exec()
+        .then(cartItems => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.send(cartItems);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
+
 
 app.listen(5353);
 //localhost:5353/getProducts
