@@ -1,11 +1,16 @@
 import styles from './Drawer.module.scss';
 
-function Drawer({onRemove, onClickCross, items = [] }) {
+function Drawer({onRemove, onClickCross, items = [], setAddedItems }) {
 
-    const handleRemoveItem = (obj) => {
-        onRemove(obj);
-    }
-    console.log(items);
+    const handleRemove = (id) => {
+        onRemove(id);
+        setAddedItems((prev) => {
+          const newAddedItems = { ...prev };
+          delete newAddedItems[id];
+          return newAddedItems;
+        });
+      };
+
     return (
         <div className={styles.overlay}>
             <div className={styles.drawer}>
@@ -20,7 +25,7 @@ function Drawer({onRemove, onClickCross, items = [] }) {
                                 <p>{obj.title}</p>
                                 <b>{obj.price} грн.</b>
                             </div>
-                            <img onClick={() => handleRemoveItem(obj)} className={styles.delete}  src="/assets/images/delete.svg" alt="delete" />
+                            <img onClick={() => handleRemove(obj._id)} className={styles.delete}  src="/assets/images/delete.svg" alt="delete" />
                         </div>
                     ))}
                 </div>

@@ -49,6 +49,17 @@ app.get('/cart', (req, res) => {
         });
 });
 
+app.delete('/cart/:id', (req, res) => {
+    CartItem.findByIdAndDelete(req.params.id).exec()
+        .then(() => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.status(204).send();
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
 
 
 app.listen(5353);

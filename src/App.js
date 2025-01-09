@@ -13,6 +13,7 @@ function App() {
   const [cartItems, setCartItems] = React.useState([]);
   const [products, setProducts] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
+  const [addedItems, setAddedItems] = React.useState({});
 
   React.useEffect(() => {
     
@@ -30,6 +31,11 @@ function App() {
     axios.get('http://localhost:5353/cart')
     .then(function (response) {
       setCartItems(response.data);
+      const addedItemsMap = response.data.reduce((acc, item) => {
+        acc[item._id] = true;
+        return acc;
+      }, {});
+      setAddedItems(addedItemsMap);
     })
     .catch(function (error) {
       console.log(error);
@@ -37,22 +43,31 @@ function App() {
   },[]);
 
   const onAddToCart = (obj) => {
+    console.log(obj);
     axios.post('http://localhost:5353/cart', obj)
       .then(function (response) {
         setCartItems((prev) => [...prev, response.data]);
+        setAddedItems((prev) => ({ ...prev, [obj._id]: true }));
       })
       .catch(function (error) {
         console.log(error);
       });
   };
 
-  const onRemoveItem = (obj) => {
-    setCartItems(prev => prev.filter(item => 
-      item.title !== obj.title || 
-      item.image !== obj.image || 
-      item.price !== obj.price
-    ));
-  }
+  const onRemoveItem = (id) => {
+    axios.delete(`http://localhost:5353/cart/${id}`)
+      .then(() => {
+        setCartItems((prev) => prev.filter(item => item._id !== id));
+        setAddedItems((prev) => {
+          const newAddedItems = { ...prev };
+          delete newAddedItems[id];
+          return newAddedItems;
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const onChangeSearchInput = (event) => {
     setSearch(event.target.value);
@@ -60,7 +75,7 @@ function App() {
 
   return (
     <div className="wrapper">
-      {cartOpened && <Drawer items={cartItems} onRemove={(obj)=>onRemoveItem(obj)} onClickCross={() => setCartOpened(false)} />}
+      {cartOpened && <Drawer items={cartItems} onRemove={(obj)=>onRemoveItem(obj)} setAddedItems={setAddedItems} onClickCross={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <hr />
       <div className="productPage">
@@ -72,15 +87,17 @@ function App() {
           </div>
         </div>
         <div className="products">
-          {products.map((el,idx) => (
+          {products.map((el) => (
             <Card
-              key={idx}
+              key={el._id}
+              _id={el._id}
               title={el.title}
               price={el.price}
               image={el.image}
               onFavorite={() => console.log('add to bookmarks')}
               onPlus={(obj) => onAddToCart(obj)}
               onRemoveItem={(obj) => onRemoveItem(obj)}
+              isAdded={!!addedItems[el._id]}
             />
           ))}
         </div>

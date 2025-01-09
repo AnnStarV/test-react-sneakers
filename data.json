@@ -1,72 +1,60 @@
 [
     {
-      "_id": "653830e2d656ce35eb3654a3",
       "title": "Мужские Кроссовки Nike Blazer Mid Suede",
       "price": 12999,
       "image": "/assets/images/1.jpg"
     },
     {
-      "_id": "65383298d656ce35eb3654a5",
       "title": "Мужские Кроссовки Nike Air Max 270",
       "price": 12999,
       "image": "/assets/images/2.jpg"
     },
     {
-      "_id": "6538337ad656ce35eb3654a7",
       "title": "Мужские Кроссовки Nike Blazer Mid Suede",
       "price": 8400,
       "image": "/assets/images/3.jpg"
     },
     {
-      "_id": "653833a1d656ce35eb3654a9",
       "title": "Кроссовки Puma X Aka Boku Future Rider",
       "price": 8499,
       "image": "/assets/images/4.jpg"
     },
     {
-      "_id": "653833c1d656ce35eb3654aa",
       "title": "Мужские Кроссовки Under Armour Curry 8",
       "price": 15100,
       "image": "/assets/images/5.jpg"
     },
     {
-      "_id": "653833d8d656ce35eb3654ab",
       "title": "Мужские Кроссовки Nike Kyrie 7",
       "price": 11200,
       "image": "/assets/images/6.jpg"
     },
     {
-      "_id": "653833efd656ce35eb3654ad",
       "title": "Мужские Кроссовки Jordan Air Jordan 11",
       "price": 10999,
       "image": "/assets/images/7.jpg"
     },
     {
-      "_id": "65383403d656ce35eb3654ae",
       "title": "Мужские Кроссовки Nike LeBron XVIII",
       "price": 16499,
       "image": "/assets/images/8.jpg"
     },
     {
-      "_id": "65383421d656ce35eb3654b0",
       "title": "Мужские Кроссовки Nike Lebron XVIII Low",
       "price": 13999,
       "image": "/assets/images/9.jpg"
     },
     {
-      "_id": "65383434d656ce35eb3654b1",
       "title": "Мужские Кроссовки Nike Blazer Mid Suede",
       "price": 8499,
       "image": "/assets/images/10.jpg"
     },
     {
-      "_id": "65383448d656ce35eb3654b2",
       "title": "Кроссовки Puma X Aka Boku Future Rider",
       "price": 8999,
       "image": "/assets/images/11.jpg"
     },
     {
-      "_id": "65383459d656ce35eb3654b3",
       "title": "Мужские Кроссовки Nike Kyrie Flytrap IV",
       "price": 11299,
       "image": "/assets/images/12.jpg"

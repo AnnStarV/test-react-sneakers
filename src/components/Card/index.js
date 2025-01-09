@@ -1,20 +1,15 @@
 import React from 'react'
 import styles from './Card.module.scss';
 
-function Card({onFavorite, onPlus, onRemoveItem, title, image, price}) {
-
-    const [isAdded, setIsAdded] = React.useState(false);
+function Card({onFavorite, onPlus, onRemoveItem, _id, title, image, price, isAdded}) {
 
     const handlePlus = ()=> {
         if (isAdded) {
-            onRemoveItem({ title, image, price });
+            onRemoveItem(_id);
         } else {
-            onPlus({ title, image, price });
+            onPlus({ _id, title, image, price });
         }
-        setIsAdded(!isAdded);
     };
-
-    
 
     return (
         <div className={styles.productCard}>
