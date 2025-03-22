@@ -80,6 +80,28 @@ button {
 
 }
 
+.backButtonLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px;
+
+  .backButton {
+      margin: 0px 10px 0px 20px;
+      filter: invert(1);
+      cursor: pointer;
+      transform: rotate(180deg);
+      transition: all 0.3s ease-in-out;
+      &:hover {
+          filter: invert(0.5);
+          transform: translateX(-5px) rotate(180deg);
+      }
+  }
+}
+
 
 .products {
   margin: 0px 40px;
@@ -103,3 +125,5 @@ button {
   background-color: #91c551;
   transition: all .2s ease-in-out;
 }
+
+

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Products, CartItem } = require('./schema');
+const { Products, CartItem, FavItem } = require('./schema');
 const express = require('express');
 const cors = require('cors');
 
@@ -51,6 +51,40 @@ app.get('/cart', (req, res) => {
 
 app.delete('/cart/:id', (req, res) => {
     CartItem.findByIdAndDelete(req.params.id).exec()
+        .then(() => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.status(204).send();
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
+app.post('/favorites', (req, res) => {
+    const newFavItem = new FavItem(req.body);
+    newFavItem.save()
+        .then(() => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.status(201).send(newFavItem);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
+app.get('/favorites', (req, res) => {
+    FavItem.find().exec()
+        .then(FavItems => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.send(FavItems);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
+app.delete('/favorites/:id', (req, res) => {
+    FavItem.findByIdAndDelete(req.params.id).exec()
         .then(() => {
             res.set('Access-Control-Allow-Origin', '*');
             res.status(204).send();

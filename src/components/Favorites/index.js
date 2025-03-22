@@ -1,7 +1,7 @@
 import React from 'react'
-import styles from './Card.module.scss';
+import styles from './Favorites.module.scss';
 
-function Card({onFavorite, isAddFavorite, onRemoveFavItem, onPlus, onRemoveItem, _id, title, image, price, isAdded}) {
+function Favorites({onFavorite, isAddFavorite, onRemoveFavItem, onPlus, onRemoveItem, _id, title, image, price, isAdded}) {
 
     const [isFavorite, setIsFavorite] = React.useState(false);
 
@@ -42,4 +42,4 @@ function Card({onFavorite, isAddFavorite, onRemoveFavItem, onPlus, onRemoveItem,
 }
 
 
-export default Card;
+export default Favorites;
