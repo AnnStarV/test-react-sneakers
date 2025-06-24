@@ -23,12 +23,20 @@ button {
   background-color: transparent;
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
 .wrapper {
   margin: 5em auto;
   background-color: #ffffff;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.04);
   border-radius: 20px;
   max-width: 1020px;
+  min-height: calc(100vh - 10em);
+  display: flex;
+  flex-direction: column;
 
   hr {
     background-color: #EAEAEA;
@@ -80,27 +88,6 @@ button {
 
 }
 
-.backButtonLink {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #000;
-  font-size: 24px;
-  font-weight: 700;
-  margin: 20px;
-
-  .backButton {
-      margin: 0px 10px 0px 20px;
-      filter: invert(1);
-      cursor: pointer;
-      transform: rotate(180deg);
-      transition: all 0.3s ease-in-out;
-      &:hover {
-          filter: invert(0.5);
-          transform: translateX(-5px) rotate(180deg);
-      }
-  }
-}
 
 
 .products {
@@ -118,7 +105,7 @@ button {
   color: #fff;
   font-size: 16px;
   padding: 18px 0px;
-  border-radius:18px;
+  border-radius: 18px;
 }
 
 .greenButton:hover {
@@ -127,3 +114,93 @@ button {
 }
 
 
+.favorites-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 290px;
+  padding: 10px;
+  margin: 0 auto;
+  text-align: center;
+  flex: 1;
+  align-items: center;
+
+  .fav-emoji {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #808080;
+    margin-bottom: 50px;
+  }
+
+  .greenButton {
+    width: 245px;
+    position: relative;
+
+    img {
+      transform: rotate(180deg);
+      position: absolute;
+      left: 30px;
+      top: 20px;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    &:hover {
+      background-color: #91c551;
+      transition: all .2s ease-in-out;
+
+      img {
+        transform: rotate(180deg) translateX(10px);
+      }
+    }
+  }
+}
+
+.favorites-fulled {
+
+  .favorites-header {
+    margin: 40px 40px 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .backButtonLink {
+    margin-right: 20px;
+  }
+
+  .backFav {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #F2F2F2;
+
+    .backButton {
+      height: 15px;
+      filter: invert(0.5);
+      cursor: pointer;
+      transform: rotate(180deg);
+      transition: all 0.2s ease-in-out;   
+    }
+
+    &:hover {
+      .backButton {
+        filter: invert(0.8);
+      }
+    }
+  }
+}

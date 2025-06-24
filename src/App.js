@@ -146,24 +146,40 @@ function App() {
           } />
           <Route path="/favorites" element={
             <>
-              <Link to="/" className="backButtonLink"><img className="backButton" src="/assets/images/arrow.svg" alt="back" />На главную</Link>
-              <div className="products">
-                {favoriteItems.map((el) => (
-                  <Favorites
-                    key={el._id}
-                    _id={el._id}
-                    title={el.title}
-                    price={el.price}
-                    image={el.image}
-                    onFavorite={(obj) => onAddToFavorite(obj)}
-                    onPlus={(obj) => onAddToCart(obj)}
-                    onRemoveItem={(obj) => onRemoveItem(obj)}
-                    onRemoveFavItem={(obj) => onRemoveItemFav(obj)}
-                    isAddFavorite={!!addedfavoriteItems[el._id]}
-                    isAdded={!!addedItems[el._id]}
-                  />
-                ))}
-              </div>
+              {favoriteItems.length === 0 ? (
+                <div className="favorites-empty">
+                  <img className="fav-emoji" src="/assets/images/empty-fav.png" alt="fav-emoji" />
+                  <h2>Закладок нет :(</h2>
+                  <p>вы ничего не добавляли в закладки</p>
+                  <Link to="/" className="backButtonLink"><button className='greenButton'><img className="backButton" src="/assets/images/arrow.svg" alt="back" />Вернуться назад</button></Link>
+                </div>
+              ) :
+                (
+                  <div className="favorites-fulled">
+                    <div className="favorites-header">
+                      <Link to="/" className="backButtonLink"><button className='backFav'><img className="backButton" src="/assets/images/arrow.svg" alt="back" /></button></Link>
+                      <h2>Мои закладки</h2>
+                    </div>
+
+                    <div className="products">
+                      {favoriteItems.map((el) => (
+                        <Favorites
+                          key={el._id}
+                          _id={el._id}
+                          title={el.title}
+                          price={el.price}
+                          image={el.image}
+                          onFavorite={(obj) => onAddToFavorite(obj)}
+                          onPlus={(obj) => onAddToCart(obj)}
+                          onRemoveItem={(obj) => onRemoveItem(obj)}
+                          onRemoveFavItem={(obj) => onRemoveItemFav(obj)}
+                          isAddFavorite={!!addedfavoriteItems[el._id]}
+                          isAdded={!!addedItems[el._id]}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
             </>
           } />
         </Routes>
