@@ -23,8 +23,8 @@ button {
   background-color: transparent;
 }
 
-html,
-body {
+html, body, #root {
+  height: 100%;
   min-height: 100%;
 }
 
@@ -91,11 +91,11 @@ body {
 
 
 .products {
-  margin: 0px 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 230px);
-  justify-content: space-between;
-  flex-flow: wrap;
+    margin: 0px 40px 40px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, 210px);
+    justify-content: start;
 }
 
 
@@ -114,13 +114,19 @@ body {
 }
 
 
+.favorites {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .favorites-empty {
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 290px;
   padding: 10px;
-  margin: 0 auto;
+  margin: 20px auto;
   text-align: center;
   flex: 1;
   align-items: center;
@@ -169,7 +175,7 @@ body {
 .favorites-fulled {
 
   .favorites-header {
-    margin: 40px 40px 0px;
+    margin: 40px 40px 20px;
     display: flex;
     flex-direction: row;
     align-items: center;

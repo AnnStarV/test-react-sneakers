@@ -1,104 +1,115 @@
 import './index.scss';
 import React from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Card from './components/Card';
 import Header from './components/Header';
 import Drawer from './components/Drawer';
-import Favorites from './components/Favorites';
+import AppContext from './context';
+
+import Home from './pages/Home';
+import FavoritesPage from './pages/Favorites';
 
 function App() {
-  const [cartOpened, setCartOpened] = React.useState(false);
+  const [products, setProducts] = React.useState(Array(12).fill({}));
   const [cartItems, setCartItems] = React.useState([]);
   const [favoriteItems, setFavItems] = React.useState([]);
-  const [addedfavoriteItems, setAddedfavoriteItems] = React.useState({});
-  const [products, setProducts] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
+  const [cartOpened, setCartOpened] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const [addedItems, setAddedItems] = React.useState({});
+  const [addedfavoriteItems, setAddedfavoriteItems] = React.useState({});
 
   React.useEffect(() => {
-    axios.get('http://localhost:5353/getProducts')
-      .then(function (response) {
-        setProducts(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    setAddedItems(
+      cartItems.reduce((acc, item) => {
+        acc[item._id] = true;
+        return acc;
+      }, {})
+    );
+  }, [cartItems]);
 
-    axios.get('http://localhost:5353/cart')
-      .then(function (response) {
-        setCartItems(response.data);
-        const addedItemsMap = response.data.reduce((acc, item) => {
-          acc[item._id] = true;
-          return acc;
-        }, {});
-        setAddedItems(addedItemsMap);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+  // Синхронизация addedfavoriteItems при изменении favoriteItems
+  React.useEffect(() => {
+    setAddedfavoriteItems(
+      favoriteItems.reduce((acc, item) => {
+        acc[item._id] = true;
+        return acc;
+      }, {})
+    );
+  }, [favoriteItems]);
 
-    axios.get('http://localhost:5353/favorites')
-      .then(function (response) {
-        setFavItems(response.data);
-        const addedItemsMap = response.data.reduce((acc, item) => {
-          acc[item._id] = true;
-          return acc;
-        }, {});
-        setAddedfavoriteItems(addedItemsMap);
+  React.useEffect(() => {
+    setIsLoading(true);
+
+    Promise.all([
+      axios.get('http://localhost:5353/getProducts'),
+      axios.get('http://localhost:5353/cart'),
+      axios.get('http://localhost:5353/favorites')
+    ])
+      .then(async ([productsRes, cartRes, favRes]) => {
+        // Искусственная задержка для продуктов
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            setProducts(productsRes.data);
+            resolve();
+          }, 1000);
+        });
+
+        setCartItems(cartRes.data);
+        setFavItems(favRes.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
   const onAddToCart = (obj) => {
-    axios.post('http://localhost:5353/cart', obj)
-      .then(function (response) {
-        setCartItems((prev) => [...prev, response.data]);
-        setAddedItems((prev) => ({ ...prev, [obj._id]: true }));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    const isAdded = cartItems.some(item => item._id === obj._id);
+    if (isAdded) {
+      axios.delete(`http://localhost:5353/cart/${obj._id}`)
+        .then(() => {
+          setCartItems((prev) => prev.filter(item => item._id !== obj._id));
+        })
+        .catch(console.log);
+    } else {
+      axios.post('http://localhost:5353/cart', obj)
+        .then((response) => {
+          setCartItems((prev) => [...prev, response.data]);
+        })
+        .catch(console.log);
+    }
   };
 
   const onAddToFavorite = (obj) => {
-    axios.post('http://localhost:5353/favorites', obj)
-      .then(function (response) {
-        setFavItems((prev) => [...prev, response.data]);
-        setAddedfavoriteItems((prev) => ({ ...prev, [obj._id]: true }));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    const isFavorite = favoriteItems.some(item => item._id === obj._id);
+    if (isFavorite) {
+      axios.delete(`http://localhost:5353/favorites/${obj._id}`)
+        .then(() => {
+          setFavItems((prev) => prev.filter(item => item._id !== obj._id));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      axios.post('http://localhost:5353/favorites', obj)
+        .then(function (response) {
+          setFavItems((prev) => [...prev, response.data]);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
 
   const onRemoveItem = (id) => {
     axios.delete(`http://localhost:5353/cart/${id}`)
       .then(() => {
         setCartItems((prev) => prev.filter(item => item._id !== id));
-        setAddedItems((prev) => {
-          const newAddedItems = { ...prev };
-          delete newAddedItems[id];
-          return newAddedItems;
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const onRemoveItemFav = (id) => {
-    axios.delete(`http://localhost:5353/favorites/${id}`)
-      .then(() => {
-        setFavItems((prev) => prev.filter(item => item._id !== id));
-        setAddedfavoriteItems((prev) => {
-          const newAddedItems = { ...prev };
-          delete newAddedItems[id];
-          return newAddedItems;
-        });
       })
       .catch((error) => {
         console.log(error);
@@ -109,82 +120,37 @@ function App() {
     setSearch(event.target.value);
   };
 
-  return (
-    <Router>
-      <div className="wrapper">
-        {cartOpened && <Drawer items={cartItems} onRemove={(obj) => onRemoveItem(obj)} onClickCross={() => setCartOpened(false)} />}
-        <Header onClickCart={() => setCartOpened(true)} />
-        <hr />
-        <Routes>
-          <Route path="/" element={
-            <div className="productPage">
-              <div className="headerProducts">
-                <h1>{searchValue ? `Поиск по запросу: "${searchValue}"` : "Все кроссовки"}</h1>
-                <div className="searchComponent">
-                  <img src="/assets/images/search.png" alt="search" />
-                  <input onChange={onChangeSearchInput} value={searchValue} type="text" placeholder='Поиск...' />
-                </div>
-              </div>
-              <div className="products">
-                {products.map((el) => (
-                  <Card
-                    key={el._id}
-                    _id={el._id}
-                    title={el.title}
-                    price={el.price}
-                    image={el.image}
-                    onFavorite={(obj) => onAddToFavorite(obj)}
-                    onPlus={(obj) => onAddToCart(obj)}
-                    onRemoveItem={(obj) => onRemoveItem(obj)}
-                    onRemoveFavItem={(obj) => onRemoveItemFav(obj)}
-                    isAddFavorite={!!addedfavoriteItems[el._id]}
-                    isAdded={!!addedItems[el._id]}
-                  />
-                ))}
-              </div>
-            </div>
-          } />
-          <Route path="/favorites" element={
-            <>
-              {favoriteItems.length === 0 ? (
-                <div className="favorites-empty">
-                  <img className="fav-emoji" src="/assets/images/empty-fav.png" alt="fav-emoji" />
-                  <h2>Закладок нет :(</h2>
-                  <p>вы ничего не добавляли в закладки</p>
-                  <Link to="/" className="backButtonLink"><button className='greenButton'><img className="backButton" src="/assets/images/arrow.svg" alt="back" />Вернуться назад</button></Link>
-                </div>
-              ) :
-                (
-                  <div className="favorites-fulled">
-                    <div className="favorites-header">
-                      <Link to="/" className="backButtonLink"><button className='backFav'><img className="backButton" src="/assets/images/arrow.svg" alt="back" /></button></Link>
-                      <h2>Мои закладки</h2>
-                    </div>
+  const isItemAdded = (id) => !!addedItems[id];
+  const isItemFavorite = (id) => !!addedfavoriteItems[id];
 
-                    <div className="products">
-                      {favoriteItems.map((el) => (
-                        <Favorites
-                          key={el._id}
-                          _id={el._id}
-                          title={el.title}
-                          price={el.price}
-                          image={el.image}
-                          onFavorite={(obj) => onAddToFavorite(obj)}
-                          onPlus={(obj) => onAddToCart(obj)}
-                          onRemoveItem={(obj) => onRemoveItem(obj)}
-                          onRemoveFavItem={(obj) => onRemoveItemFav(obj)}
-                          isAddFavorite={!!addedfavoriteItems[el._id]}
-                          isAdded={!!addedItems[el._id]}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-            </>
-          } />
-        </Routes>
-      </div>
-    </Router>
+  return (
+    <AppContext.Provider value={{
+      products,
+      cartItems,
+      favoriteItems,
+      isLoading,
+      searchValue,
+      setSearch, // если нужно менять поиск из Home
+      onAddToCart,
+      onAddToFavorite,
+      onRemoveItem,
+      isItemAdded,
+      isItemFavorite,
+      onChangeSearchInput,
+
+    }}>
+      <Router>
+        <div className="wrapper">
+          {cartOpened && <Drawer items={cartItems} onRemove={(obj) => onRemoveItem(obj)} onClickCross={() => setCartOpened(false)} />}
+          <Header onClickCart={() => setCartOpened(true)} />
+          <hr />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+          </Routes>
+        </div>
+      </Router>
+    </AppContext.Provider>
   );
 }
 
