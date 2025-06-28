@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Products, CartItem, FavItem } = require('./schema');
+const { Products, CartItem, FavItem, Orders } = require('./schema');
 const express = require('express');
 const cors = require('cors');
 
@@ -26,8 +26,39 @@ app.get('/getProducts', (req, res) => {
 
 });
 
+app.get('/orders', (req, res) => {
+    Orders.find().exec()
+        .then(orders => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.send(orders);
+            console.log(orders);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
+app.post('/orders', (req, res) => {
+    const newOrder = new Orders(req.body);
+    if (!newOrder.total && Array.isArray(newOrder.items)) {
+        newOrder.total = newOrder.items.reduce((sum, item) => sum + item.price, 0);
+        newOrder.tax = Math.round(newOrder.total * 0.02); 
+    }
+    
+    newOrder.orderNumber = 'ORD-' + Date.now().toString().slice(-5); 
+    newOrder.save()
+        .then((savedOrder) => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.status(201).send(savedOrder); // savedOrder содержит _id
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
 app.post('/cart', (req, res) => {
     const newCartItem = new CartItem(req.body);
+
     newCartItem.save()
         .then(() => {
             res.set('Access-Control-Allow-Origin', '*');
@@ -47,6 +78,15 @@ app.get('/cart', (req, res) => {
         .catch(err => {
             res.status(500).send(err);
         });
+});
+
+app.delete('/cart', async (req, res) => {
+    try {
+        await CartItem.deleteMany({});
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 app.delete('/cart/:id', (req, res) => {

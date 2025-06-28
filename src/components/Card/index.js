@@ -54,7 +54,7 @@ function Card({ _id, title, image, price, loading = false }) {
                     <div className={styles.productInfo} >
                         <div className={styles.productPrice}>
                             <p>Цена:</p>
-                            <b>{price}</b>
+                            <b>{price} грн.</b>
                         </div>
                         <img
                             className={styles.addProduct}

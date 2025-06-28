@@ -16,18 +16,20 @@ function FavoritesPage() {
   } = React.useContext(AppContext);
 
   return (
-    <div className="favorites">
+    <div className="resourses">
       {favoriteItems.length === 0 ? (
-        <div className="favorites-empty">
-          <img className="fav-emoji" src="/assets/images/empty-fav.png" alt="fav-emoji" />
+        
+
+        <div className="res-empty">
+          <img className="res-emoji" src="/assets/images/empty-fav.png" alt="fav-emoji" />
           <h2>Закладок нет :(</h2>
           <p>вы ничего не добавляли в закладки</p>
           <Link to="/" className="backButtonLink"><button className='greenButton'><img className="backButton" src="/assets/images/arrow.svg" alt="back" />Вернуться назад</button></Link>
         </div>
       ) : (
 
-        <div className="favorites-fulled">
-          <div className="favorites-header">
+        <div className="res-fulled">
+          <div className="res-header">
             <Link to="/" className="backButtonLink"><button className='backFav'><img className="backButton" src="/assets/images/arrow.svg" alt="back" /></button></Link>
             <h2>Мои закладки</h2>
           </div>

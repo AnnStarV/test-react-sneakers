@@ -9,10 +9,12 @@ import AppContext from './context';
 
 import Home from './pages/Home';
 import FavoritesPage from './pages/Favorites';
+import OrdersPage from './pages/Orders';
 
 function App() {
   const [products, setProducts] = React.useState(Array(12).fill({}));
   const [cartItems, setCartItems] = React.useState([]);
+  const [orders, setOrders] = React.useState([]);
   const [favoriteItems, setFavItems] = React.useState([]);
   const [searchValue, setSearch] = React.useState('');
   const [cartOpened, setCartOpened] = React.useState(false);
@@ -20,6 +22,9 @@ function App() {
 
   const [addedItems, setAddedItems] = React.useState({});
   const [addedfavoriteItems, setAddedfavoriteItems] = React.useState({});
+
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const tax = Math.round(total * 0.02);
 
   React.useEffect(() => {
     setAddedItems(
@@ -46,9 +51,10 @@ function App() {
     Promise.all([
       axios.get('http://localhost:5353/getProducts'),
       axios.get('http://localhost:5353/cart'),
-      axios.get('http://localhost:5353/favorites')
+      axios.get('http://localhost:5353/favorites'),
+      axios.get('http://localhost:5353/orders')
     ])
-      .then(async ([productsRes, cartRes, favRes]) => {
+      .then(async ([productsRes, cartRes, favRes, orderRes]) => {
         // Искусственная задержка для продуктов
         await new Promise((resolve) => {
           setTimeout(() => {
@@ -59,6 +65,7 @@ function App() {
 
         setCartItems(cartRes.data);
         setFavItems(favRes.data);
+        setOrders(orderRes.data);
       })
       .catch((error) => {
         console.log(error);
@@ -127,6 +134,7 @@ function App() {
     <AppContext.Provider value={{
       products,
       cartItems,
+      setCartItems,
       favoriteItems,
       isLoading,
       searchValue,
@@ -137,7 +145,11 @@ function App() {
       isItemAdded,
       isItemFavorite,
       onChangeSearchInput,
-
+      setCartOpened,
+      total,
+      tax,
+      orders,
+      setOrders
     }}>
       <Router>
         <div className="wrapper">
@@ -147,6 +159,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
           </Routes>
         </div>
       </Router>
